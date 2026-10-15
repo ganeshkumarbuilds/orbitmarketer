@@ -1,69 +1,532 @@
-import Image from "next/image";
+"use client";
+
+import {
+  Activity,
+  ArrowDownRight,
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  Bell,
+  BookOpen,
+  CheckCircle2,
+  ChevronDown,
+  CircleHelp,
+  Command,
+  FileText,
+  FlaskConical,
+  LayoutDashboard,
+  Plus,
+  Search,
+  Settings,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+  WandSparkles,
+  Zap,
+} from "lucide-react";
+
+const stats = [
+  {
+    label: "Campaigns generated",
+    value: "24",
+    change: "+18.2%",
+    positive: true,
+    icon: Sparkles,
+  },
+  {
+    label: "Assets created",
+    value: "186",
+    change: "+12.5%",
+    positive: true,
+    icon: FileText,
+  },
+  {
+    label: "Brand compliance",
+    value: "96.8%",
+    change: "+4.3%",
+    positive: true,
+    icon: ShieldCheck,
+  },
+  {
+    label: "Duplicates prevented",
+    value: "32",
+    change: "-8.4%",
+    positive: false,
+    icon: Activity,
+  },
+];
+
+const campaigns = [
+  {
+    name: "Q4 Product Launch",
+    channel: "LinkedIn",
+    assets: 12,
+    status: "Completed",
+    date: "Oct 14, 2026",
+    color: "blue",
+  },
+  {
+    name: "Autumn Growth Campaign",
+    channel: "Email",
+    assets: 8,
+    status: "In progress",
+    date: "Oct 13, 2026",
+    color: "violet",
+  },
+  {
+    name: "Brand Awareness Series",
+    channel: "Blog & Social",
+    assets: 15,
+    status: "Completed",
+    date: "Oct 12, 2026",
+    color: "emerald",
+  },
+  {
+    name: "Customer Success Stories",
+    channel: "Landing page",
+    assets: 6,
+    status: "Needs review",
+    date: "Oct 11, 2026",
+    color: "amber",
+  },
+];
+
+const navigation = [
+  { label: "Overview", icon: LayoutDashboard },
+  { label: "Campaigns", icon: FileText },
+  { label: "Brand Brain", icon: BookOpen },
+  { label: "Experiments", icon: FlaskConical },
+  { label: "Analytics", icon: BarChart3 },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
+    <main className="min-h-screen bg-[#090b10] text-slate-100">
+      <div className="flex min-h-screen">
+        <aside className="hidden w-[248px] shrink-0 border-r border-white/[0.07] bg-[#0c0e14] p-5 lg:flex lg:flex-col">
+          <a href="#" className="flex items-center gap-3 px-2 py-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 shadow-lg shadow-violet-600/20">
+              <Command size={23} strokeWidth={2.4} />
+            </div>
+
+            <div>
+              <p className="text-lg font-bold tracking-tight">
+                Orbit<span className="text-violet-400">Marketer</span>
+              </p>
+              <p className="text-[11px] text-slate-500">
+                BRAND INTELLIGENCE
+              </p>
+            </div>
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+          <div className="mt-10">
+            <p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Workspace
+            </p>
+
+            <nav className="space-y-1">
+              {navigation.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                  <a
+                    key={item.label}
+                    href={index === 0 ? "#" : `#${item.label.toLowerCase().replaceAll(" ", "-")}`}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
+                      index === 0
+                        ? "bg-violet-500/15 font-medium text-violet-300"
+                        : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    {item.label}
+                    {item.label === "Brand Brain" && (
+                      <span className="ml-auto h-2 w-2 rounded-full bg-emerald-400" />
+                    )}
+                  </a>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="mt-10 rounded-2xl border border-violet-400/15 bg-gradient-to-br from-violet-500/10 to-blue-500/[0.04] p-4">
+            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-violet-500/15 text-violet-300">
+              <Zap size={19} />
+            </div>
+
+            <p className="text-sm font-semibold">Brand Brain</p>
+            <p className="mt-1 text-xs leading-5 text-slate-400">
+              Your brand knowledge powers every campaign.
+            </p>
+
+            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="h-full w-[72%] rounded-full bg-violet-400" />
+            </div>
+
+            <p className="mt-2 text-[11px] text-slate-500">
+              Demo interface · 72% configured
+            </p>
+          </div>
+
+          <div className="mt-auto space-y-1 border-t border-white/[0.07] pt-4">
+            <a
+              href="#help"
+              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-400 hover:bg-white/[0.04]"
+            >
+              <CircleHelp size={18} />
+              Help & support
+            </a>
+
+            <a
+              href="#settings"
+              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-400 hover:bg-white/[0.04]"
+            >
+              <Settings size={18} />
+              Settings
+            </a>
+
+            <div className="mt-3 flex items-center gap-3 rounded-xl bg-white/[0.035] p-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-blue-500 text-sm font-bold">
+                GK
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">Workspace Admin</p>
+                <p className="truncate text-xs text-slate-500">
+                  Marketing workspace
+                </p>
+              </div>
+              <ChevronDown size={15} className="text-slate-500" />
+            </div>
+          </div>
+        </aside>
+
+        <section className="min-w-0 flex-1">
+          <header className="sticky top-0 z-10 flex h-[76px] items-center justify-between border-b border-white/[0.07] bg-[#090b10]/90 px-5 backdrop-blur-xl sm:px-8">
+            <div>
+              <div className="flex items-center gap-2 text-xs text-slate-500">
+                Workspace <span>/</span>
+                <span className="text-slate-300">Overview</span>
+              </div>
+              <h1 className="mt-1 text-lg font-semibold">Dashboard</h1>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                aria-label="Search"
+                className="hidden h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] text-slate-400 hover:bg-white/[0.05] sm:flex"
+              >
+                <Search size={18} />
+              </button>
+
+              <button
+                aria-label="Notifications"
+                className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] text-slate-400 hover:bg-white/[0.05]"
+              >
+                <Bell size={18} />
+                <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-violet-400" />
+              </button>
+
+              <button className="flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold transition hover:bg-violet-500">
+                <Plus size={17} />
+                <span className="hidden sm:inline">New campaign</span>
+              </button>
+            </div>
+          </header>
+
+          <div className="mx-auto max-w-[1500px] space-y-8 p-5 sm:p-8">
+            <section className="relative overflow-hidden rounded-3xl border border-violet-400/15 bg-gradient-to-r from-[#17132b] via-[#15142a] to-[#101827] p-6 sm:p-9">
+              <div className="pointer-events-none absolute -right-16 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
+              <div className="pointer-events-none absolute right-1/4 top-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
+
+              <div className="relative max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1.5 text-xs font-medium text-violet-200">
+                  <Sparkles size={13} />
+                  AI-powered brand intelligence
+                </div>
+
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Every campaign.
+                  <br />
+                  <span className="bg-gradient-to-r from-violet-300 to-blue-300 bg-clip-text text-transparent">
+                    Consistent by design.
+                  </span>
+                </h2>
+
+                <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400 sm:text-base">
+                  Create on-brand marketing assets across every channel.
+                  Ground your content in brand knowledge, catch duplicates,
+                  and improve campaigns with measurable experiments.
+                </p>
+
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <button className="flex items-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:bg-violet-400">
+                    <WandSparkles size={17} />
+                    Generate campaign
+                    <ArrowRight size={16} />
+                  </button>
+
+                  <button className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/[0.08]">
+                    <Upload size={16} />
+                    Upload brand guidelines
+                  </button>
+                </div>
+              </div>
+
+              <div className="relative mt-8 grid max-w-2xl grid-cols-3 gap-3 border-t border-white/[0.08] pt-5 sm:mt-10">
+                <div>
+                  <p className="text-xs text-slate-500">Content channels</p>
+                  <p className="mt-1 text-lg font-semibold">05</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Brand rules</p>
+                  <p className="mt-1 text-lg font-semibold">Demo data</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">AI workflow</p>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-emerald-300">
+                    <CheckCircle2 size={15} />
+                    UI preview
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div className="mb-4 flex items-end justify-between gap-4">
+                <div>
+                  <h2 className="text-base font-semibold">Performance overview</h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Illustrative dashboard metrics
+                  </p>
+                </div>
+
+                <button className="hidden items-center gap-2 text-sm text-slate-400 hover:text-white sm:flex">
+                  Last 30 days <ChevronDown size={15} />
+                </button>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {stats.map((stat) => {
+                  const Icon = stat.icon;
+
+                  return (
+                    <article
+                      key={stat.label}
+                      className="rounded-2xl border border-white/[0.07] bg-[#0e1119] p-5 transition hover:border-white/[0.14]"
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-slate-400">{stat.label}</p>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-400/10 text-violet-300">
+                          <Icon size={18} />
+                        </div>
+                      </div>
+
+                      <div className="mt-5 flex items-end justify-between gap-3">
+                        <p className="text-3xl font-semibold tracking-tight">
+                          {stat.value}
+                        </p>
+
+                        <span
+                          className={`mb-1 inline-flex items-center gap-1 text-xs font-medium ${
+                            stat.positive
+                              ? "text-emerald-400"
+                              : "text-slate-400"
+                          }`}
+                        >
+                          {stat.positive ? (
+                            <ArrowUpRight size={14} />
+                          ) : (
+                            <ArrowDownRight size={14} />
+                          )}
+                          {stat.change}
+                        </span>
+                      </div>
+
+                      <p className="mt-3 text-[11px] text-slate-600">
+                        Sample metrics · Not live data
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-[1.65fr_1fr]">
+              <div
+                id="campaigns"
+                className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0e1119]"
+              >
+                <div className="flex items-center justify-between border-b border-white/[0.07] p-5 sm:p-6">
+                  <div>
+                    <h2 className="font-semibold">Recent campaigns</h2>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Sample campaigns for the interface preview
+                    </p>
+                  </div>
+
+                  <button className="flex items-center gap-1 text-sm text-violet-300 hover:text-violet-200">
+                    View all <ArrowRight size={15} />
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[570px] text-left text-sm">
+                    <thead className="bg-white/[0.02] text-xs text-slate-500">
+                      <tr>
+                        <th className="px-5 py-3 font-medium sm:px-6">
+                          Campaign
+                        </th>
+                        <th className="px-4 py-3 font-medium">Assets</th>
+                        <th className="px-4 py-3 font-medium">Status</th>
+                        <th className="px-5 py-3 font-medium sm:px-6">Date</th>
+                      </tr>
+                    </thead>
+
+                    <tbody className="divide-y divide-white/[0.05]">
+                      {campaigns.map((campaign) => (
+                        <tr
+                          key={campaign.name}
+                          className="transition hover:bg-white/[0.025]"
+                        >
+                          <td className="px-5 py-4 sm:px-6">
+                            <p className="font-medium text-slate-200">
+                              {campaign.name}
+                            </p>
+                            <p className="mt-1 text-xs text-slate-500">
+                              {campaign.channel}
+                            </p>
+                          </td>
+
+                          <td className="px-4 py-4 text-slate-300">
+                            {campaign.assets}
+                          </td>
+
+                          <td className="px-4 py-4">
+                            <span
+                              className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                                campaign.status === "Completed"
+                                  ? "bg-emerald-400/10 text-emerald-300"
+                                  : campaign.status === "In progress"
+                                    ? "bg-blue-400/10 text-blue-300"
+                                    : "bg-amber-400/10 text-amber-300"
+                              }`}
+                            >
+                              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                              {campaign.status}
+                            </span>
+                          </td>
+
+                          <td className="whitespace-nowrap px-5 py-4 text-xs text-slate-500 sm:px-6">
+                            {campaign.date}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="border-t border-white/[0.06] px-6 py-3 text-xs text-slate-600">
+                  Example data only. Campaigns are not connected to a database yet.
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <section
+                  id="brand-brain"
+                  className="rounded-2xl border border-white/[0.07] bg-[#0e1119] p-5 sm:p-6"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h2 className="font-semibold">Brand Brain</h2>
+                      <p className="mt-1 text-xs text-slate-500">
+                        Knowledge source status
+                      </p>
+                    </div>
+
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400/10 text-blue-300">
+                      <BookOpen size={18} />
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-xl border border-dashed border-white/[0.12] p-5 text-center">
+                    <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] text-slate-400">
+                      <Upload size={20} />
+                    </div>
+
+                    <p className="mt-3 text-sm font-medium">
+                      Connect your brand knowledge
+                    </p>
+                    <p className="mx-auto mt-1 max-w-[230px] text-xs leading-5 text-slate-500">
+                      Upload a PDF to ground future campaigns in your brand
+                      guidelines.
+                    </p>
+
+                    <button className="mt-4 w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium transition hover:bg-white/[0.05]">
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <Plus size={15} />
+                        Add brand document
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                    No brand document connected
+                  </div>
+                </section>
+
+                <section
+                  id="experiments"
+                  className="rounded-2xl border border-white/[0.07] bg-[#0e1119] p-5 sm:p-6"
+                >
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-semibold">Experiment engine</h2>
+                    <FlaskConical size={18} className="text-violet-300" />
+                  </div>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    Compare campaign variants and use real performance metrics
+                    to improve future recommendations.
+                  </p>
+
+                  <div className="mt-5 space-y-3">
+                    {[
+                      { label: "Variant A", width: "50%", color: "bg-violet-400" },
+                      { label: "Variant B", width: "30%", color: "bg-blue-400" },
+                      { label: "Variant C", width: "20%", color: "bg-emerald-400" },
+                    ].map((variant) => (
+                      <div key={variant.label}>
+                        <div className="mb-1.5 flex justify-between text-xs">
+                          <span className="text-slate-400">{variant.label}</span>
+                          <span className="text-slate-300">
+                            {variant.width}
+                          </span>
+                        </div>
+
+                        <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                          <div
+                            className={`h-full rounded-full ${variant.color}`}
+                            style={{ width: variant.width }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="mt-4 text-[11px] text-slate-600">
+                    Illustrative weights · No experiment is running yet
+                  </p>
+                </section>
+              </div>
+            </section>
+
+            <footer className="flex flex-col justify-between gap-2 border-t border-white/[0.06] py-5 text-xs text-slate-600 sm:flex-row">
+              <p>OrbitMarketer · Brand-consistent campaign engine</p>
+              <p>Assessment project · Development preview</p>
+            </footer>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }
