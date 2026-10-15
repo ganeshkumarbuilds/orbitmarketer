@@ -1,0 +1,10 @@
+import type { ReactNode } from "react";
+import AuthGuard from "@/components/AuthGuard";
+
+export default function BrandBrainLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return <AuthGuard>{children}</AuthGuard>;
+}

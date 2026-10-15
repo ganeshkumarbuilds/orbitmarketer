@@ -15,7 +15,11 @@ import {
   where,
 } from "firebase/firestore";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { deduplicateAssets } from "@/lib/dedupe";
+import {
+  findEmbeddingDuplicates,
+  type DedupeAsset,
+  type EmbeddingDuplicatePair,
+} from "@/lib/dedupe";
 import {
   ArrowLeft,
   ArrowRight,
@@ -110,6 +114,13 @@ const [dedupeReport, setDedupeReport] = useState<{
   removed: number;
   threshold: number;
 } | null>(null);
+const [duplicateCandidates, setDuplicateCandidates] =
+  useState<EmbeddingDuplicatePair[] | null>(null);
+
+const [dedupeModel, setDedupeModel] = useState("");
+
+const [removingDuplicateId, setRemovingDuplicateId] =
+  useState<string | null>(null);
   const [assets, setAssets] = useState<CampaignAsset[]>([]);
   const [campaignId, setCampaignId] = useState("");
   const [model, setModel] = useState("");
@@ -354,6 +365,8 @@ const [dedupeReport, setDedupeReport] = useState<{
   setError("");
   setNotice("");
   setDedupeReport(null);
+  setDuplicateCandidates(null);
+  setDedupeModel("");
 
   try {
     const assetsQuery = query(
@@ -364,7 +377,7 @@ const [dedupeReport, setDedupeReport] = useState<{
 
     const snapshot = await getDocs(assetsQuery);
 
-    const savedAssets = snapshot.docs.map((item) => {
+    const savedAssets: DedupeAsset[] = snapshot.docs.map((item) => {
       const data = item.data();
 
       return {
@@ -375,54 +388,161 @@ const [dedupeReport, setDedupeReport] = useState<{
       };
     });
 
-    const result = deduplicateAssets(savedAssets, 0.82);
-
-    if (result.removed.length > 0) {
-      await Promise.all(
-        result.removed.map((asset) =>
-          deleteDoc(doc(db, "assets", asset.id)),
-        ),
-      );
-
-      await updateDoc(doc(db, "campaigns", campaignId), {
-        assetCount: result.kept.length,
-        deduplication: {
-          checked: savedAssets.length,
-          removed: result.removed.length,
-          threshold: result.threshold,
-          completedAt: new Date().toISOString(),
-        },
+    if (savedAssets.length < 2) {
+      setDedupeReport({
+        checked: savedAssets.length,
+        removed: 0,
+        threshold: 0.88,
       });
-    } else {
-      await updateDoc(doc(db, "campaigns", campaignId), {
-        deduplication: {
-          checked: savedAssets.length,
-          removed: 0,
-          threshold: result.threshold,
-          completedAt: new Date().toISOString(),
-        },
-      });
+
+      setDuplicateCandidates([]);
+      setNotice("At least two saved assets are required for comparison.");
+      return;
     }
+
+    const response = await fetch("/api/embeddings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        texts: savedAssets.map(
+          (asset) =>
+            `Type: ${asset.type}\nTitle: ${asset.title}\nContent: ${asset.content}`,
+        ),
+      }),
+    });
+
+    const result = await response.json();
+
+    if (
+      !response.ok ||
+      !result.success ||
+      !Array.isArray(result.embeddings)
+    ) {
+      throw new Error(
+        result.error ?? "The embedding provider could not compare the assets.",
+      );
+    }
+
+    const threshold = 0.88;
+
+    const comparison = findEmbeddingDuplicates(
+      savedAssets,
+      result.embeddings,
+      threshold,
+    );
+
+    setDedupeModel(String(result.model ?? "OpenRouter embeddings"));
+    setDuplicateCandidates(comparison.duplicates);
 
     setDedupeReport({
       checked: savedAssets.length,
-      removed: result.removed.length,
-      threshold: result.threshold,
+      removed: 0,
+      threshold,
+    });
+
+    await updateDoc(doc(db, "campaigns", campaignId), {
+      deduplication: {
+        method: "embedding-cosine-similarity",
+        model: String(result.model ?? "unknown"),
+        dimensions: Number(result.dimensions ?? 0),
+        threshold,
+        checked: savedAssets.length,
+        candidatesFound: comparison.duplicates.length,
+        removed: 0,
+        completedAt: new Date().toISOString(),
+      },
     });
 
     setNotice(
-      result.removed.length > 0
-        ? `Deduplication complete: removed ${result.removed.length} duplicate assets. ${result.kept.length} unique assets remain.`
-        : `Deduplication complete: checked ${savedAssets.length} assets and found no duplicates.`,
+      comparison.duplicates.length
+        ? `Compared ${savedAssets.length} assets using embeddings. Found ${comparison.duplicates.length} potential duplicates for review. Nothing has been deleted.`
+        : `Compared ${savedAssets.length} assets using embeddings. No near-duplicates were found at the 88% threshold.`,
     );
   } catch (dedupeError) {
-    console.error("Deduplication failed:", dedupeError);
+    console.error("Embedding deduplication failed:", dedupeError);
 
     setError(
-      "Deduplication failed. Check your Firestore permissions and terminal logs.",
+      dedupeError instanceof Error
+        ? dedupeError.message
+        : "Embedding deduplication failed. Check the server terminal.",
     );
   } finally {
     setDeduping(false);
+  }
+}
+async function removeDuplicateAsset(
+  candidate: EmbeddingDuplicatePair,
+) {
+  if (!user || !campaignId || removingDuplicateId) {
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Permanently remove "${candidate.duplicate.title}"?\n\n` +
+      `The original asset "${candidate.keeper.title}" will be retained.`,
+  );
+
+  if (!confirmed) return;
+
+  setRemovingDuplicateId(candidate.duplicate.id);
+  setError("");
+  setNotice("");
+
+  try {
+    await deleteDoc(
+      doc(db, "assets", candidate.duplicate.id),
+    );
+
+    const remainingSnapshot = await getDocs(
+      query(
+        collection(db, "assets"),
+        where("ownerId", "==", user.uid),
+        where("campaignId", "==", campaignId),
+      ),
+    );
+
+    await updateDoc(doc(db, "campaigns", campaignId), {
+      assetCount: remainingSnapshot.size,
+      deduplication: {
+        method: "embedding-cosine-similarity",
+        model: dedupeModel,
+        threshold: dedupeReport?.threshold ?? 0.88,
+        checked: dedupeReport?.checked ?? 0,
+        candidatesFound: duplicateCandidates?.length ?? 0,
+        removed: (dedupeReport?.removed ?? 0) + 1,
+        completedAt: new Date().toISOString(),
+      },
+    });
+
+    setDuplicateCandidates((current) =>
+      current?.filter(
+        (item) =>
+          item.duplicate.id !== candidate.duplicate.id,
+      ) ?? [],
+    );
+
+    setDedupeReport((current) =>
+      current
+        ? {
+            ...current,
+            removed: current.removed + 1,
+          }
+        : current,
+    );
+
+    setNotice(
+      `Removed "${candidate.duplicate.title}". The original asset was retained.`,
+    );
+  } catch (removeError) {
+    console.error("Could not remove duplicate asset:", removeError);
+
+    setError(
+      "Could not remove the selected asset. Check Firestore permissions and try again.",
+    );
+  } finally {
+    setRemovingDuplicateId(null);
   }
 }
 
@@ -870,6 +990,95 @@ const [dedupeReport, setDedupeReport] = useState<{
                 )}
               </div>
             )}
+            {duplicateCandidates !== null && (
+  <section className="mt-4 rounded-2xl border border-white/10 bg-[#101016] p-5">
+    <h3 className="text-sm font-semibold text-zinc-100">
+      Embedding deduplication review
+    </h3>
+
+    <p className="mt-1 text-xs leading-5 text-zinc-400">
+      Model: {dedupeModel || "OpenRouter embeddings"} ·
+      Similarity threshold:{" "}
+      {((dedupeReport?.threshold ?? 0.88) * 100).toFixed(0)}%
+    </p>
+
+    {duplicateCandidates.length === 0 ? (
+      <p className="mt-4 text-sm text-emerald-300">
+        No potential duplicates were found. All saved assets remain intact.
+      </p>
+    ) : (
+      <div className="mt-4 space-y-4">
+        {duplicateCandidates.map((candidate) => (
+          <article
+            key={candidate.duplicate.id}
+            className="rounded-xl border border-amber-400/20 bg-amber-500/5 p-4"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">
+              Potential duplicate ·{" "}
+              {(candidate.similarity * 100).toFixed(1)}% similarity
+            </p>
+
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <div className="rounded-lg border border-white/10 p-3">
+                <p className="text-xs text-emerald-300">
+                  Keep original
+                </p>
+                <p className="mt-1 text-sm font-medium">
+                  {candidate.keeper.title}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
+                  {candidate.keeper.content.slice(0, 240)}
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-white/10 p-3">
+                <p className="text-xs text-amber-300">
+                  Candidate for removal
+                </p>
+                <p className="mt-1 text-sm font-medium">
+                  {candidate.duplicate.title}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
+                  {candidate.duplicate.content.slice(0, 240)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={Boolean(removingDuplicateId)}
+                onClick={() => removeDuplicateAsset(candidate)}
+                className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-xs font-medium text-red-200 disabled:opacity-50"
+              >
+                {removingDuplicateId === candidate.duplicate.id
+                  ? "Removing..."
+                  : "Confirm removal"}
+              </button>
+
+              <button
+                type="button"
+                disabled={Boolean(removingDuplicateId)}
+                onClick={() =>
+                  setDuplicateCandidates((current) =>
+                    current?.filter(
+                      (item) =>
+                        item.duplicate.id !==
+                        candidate.duplicate.id,
+                    ) ?? [],
+                  )
+                }
+                className="rounded-lg border border-white/10 px-3 py-2 text-xs text-zinc-300 disabled:opacity-50"
+              >
+                Keep both
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+)}
 
             {assets.length > 0 && model && (
               <p className="mt-4 text-right text-xs text-zinc-600">

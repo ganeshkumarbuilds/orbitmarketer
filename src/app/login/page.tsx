@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter} from "next/navigation";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,14 +10,20 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
 export default function LoginPage() {
+
   const router = useRouter();
 
-  const [isRegistering, setIsRegistering] = useState(false);
+const [isRegistering, setIsRegistering] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+  setIsRegistering(
+    new URLSearchParams(window.location.search).get("mode") === "signup",
+  );
+}, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,8 +59,9 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(auth, email.trim(), password);
       }
 
-      router.push("/");
-      router.refresh();
+      router.push("/dashboard");
+router.refresh();
+
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Something went wrong.";
