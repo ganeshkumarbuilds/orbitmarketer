@@ -229,7 +229,7 @@ const unsubscribe = onSnapshot(
     <main className="min-h-screen bg-[#08090d] px-5 py-8 text-white sm:px-8">
       <div className="mx-auto max-w-6xl">
         <Link
-          href="/"
+          href="/dashboard"
           className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />

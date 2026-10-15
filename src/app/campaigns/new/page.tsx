@@ -562,7 +562,7 @@ async function removeDuplicateAsset(
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10">
         <button
           type="button"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/dashboard")}
           className="mb-8 inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
