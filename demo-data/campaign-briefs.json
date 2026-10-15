@@ -1,0 +1,113 @@
+{
+  "dataset": "OrbitMarketer Sample Campaign Briefs",
+  "version": "1.0",
+  "description": "Three fictional campaign briefs for demonstrating brand-grounded campaign generation, compliance checks, and semantic deduplication.",
+  "briefs": [
+    {
+      "id": "brief-001",
+      "product": "FocusFlow",
+      "industry": "Productivity software",
+      "targetAudience": "Small business teams and project managers",
+      "campaignGoal": "Encourage teams to explore a clearer approach to organizing priorities.",
+      "channels": [
+        "Instagram",
+        "Email",
+        "Landing page"
+      ],
+      "brandVoice": [
+        "Clear",
+        "Friendly",
+        "Practical",
+        "Professional"
+      ],
+      "keyMessages": [
+        "Make priorities easier to understand.",
+        "Help teams plan their next steps.",
+        "Encourage thoughtful, organized work."
+      ],
+      "prohibitedClaims": [
+        "Do not guarantee productivity improvements.",
+        "Do not invent customer testimonials or statistics.",
+        "Do not claim that the product eliminates every workplace problem."
+      ],
+      "expectedAssets": [
+        "hook",
+        "reel_script",
+        "ad",
+        "email",
+        "landing_page_section"
+      ]
+    },
+    {
+      "id": "brief-002",
+      "product": "GreenNest",
+      "industry": "Sustainable home products",
+      "targetAudience": "Households interested in reducing everyday waste",
+      "campaignGoal": "Introduce reusable household products and encourage customers to learn about practical alternatives.",
+      "channels": [
+        "Instagram",
+        "Facebook",
+        "Email"
+      ],
+      "brandVoice": [
+        "Approachable",
+        "Informative",
+        "Optimistic",
+        "Honest"
+      ],
+      "keyMessages": [
+        "Small everyday choices can be worth exploring.",
+        "Explain product materials and intended uses clearly.",
+        "Help customers make informed purchasing decisions."
+      ],
+      "prohibitedClaims": [
+        "Do not claim that a product has zero environmental impact without evidence.",
+        "Do not invent certifications or sustainability statistics.",
+        "Do not promise specific environmental outcomes."
+      ],
+      "expectedAssets": [
+        "hook",
+        "reel_script",
+        "ad",
+        "email",
+        "landing_page_section"
+      ]
+    },
+    {
+      "id": "brief-003",
+      "product": "SkillSpring",
+      "industry": "Online learning",
+      "targetAudience": "College students and early-career professionals",
+      "campaignGoal": "Encourage learners to explore practical courses and identify a skill they want to develop.",
+      "channels": [
+        "Instagram",
+        "LinkedIn",
+        "Email",
+        "Landing page"
+      ],
+      "brandVoice": [
+        "Encouraging",
+        "Clear",
+        "Supportive",
+        "Realistic"
+      ],
+      "keyMessages": [
+        "Learning can start with one manageable step.",
+        "Explore courses that match your interests.",
+        "Describe course content and outcomes accurately."
+      ],
+      "prohibitedClaims": [
+        "Do not guarantee employment, salary increases, or promotions.",
+        "Do not fabricate graduate outcomes or employer endorsements.",
+        "Do not claim that every learner will achieve the same result."
+      ],
+      "expectedAssets": [
+        "hook",
+        "reel_script",
+        "ad",
+        "email",
+        "landing_page_section"
+      ]
+    }
+  ]
+}
